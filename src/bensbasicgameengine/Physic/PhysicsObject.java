@@ -218,6 +218,11 @@ public abstract class PhysicsObject implements Cloneable{
         //--------------Checking for X
         phyobj0.getPosition().setLocation(phyobj0.getPosition().getX()+phyobj0.getVelocityX(), phyobj0.getPosition().getY());
         phyobj0.updateShape();
+        phyobj00.getPosition().setLocation(phyobj00.getPosition().getX(), phyobj00.getPosition().getY()+phyobj00.getVelocityY());
+        phyobj00.updateShape();
+        if(!phyobj0.getShape().getBounds2D().intersects(stat.getShape().getBounds2D()) && !phyobj00.getShape().getBounds2D().intersects(stat.getShape().getBounds2D())){
+            return false;
+        }
         Area a = new Area(phyobj0.getShape());
         a.intersect(new Area(stat.getShape()));
         if(!a.isEmpty()){
@@ -229,8 +234,6 @@ public abstract class PhysicsObject implements Cloneable{
             return true;
         }
         //------------Checking For Y
-        phyobj00.getPosition().setLocation(phyobj00.getPosition().getX(), phyobj00.getPosition().getY()+phyobj00.getVelocityY());
-        phyobj00.updateShape();
         a = new Area(phyobj00.getShape());
         a.intersect(new Area(stat.getShape()));
         if(!a.isEmpty()){

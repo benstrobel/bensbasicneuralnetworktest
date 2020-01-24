@@ -1,5 +1,5 @@
 // Copyright 2019, Benedikt Strobel, All rights reserved.
-package example;
+package evolutiontest;
 
 import bensbasicgameengine.GameLogic.Events.HudClickEvent;
 import bensbasicgameengine.GameLogic.GameObject;
@@ -15,6 +15,7 @@ import bensbasicgameengine.Input.WindowFocusListener;
 import bensbasicgameengine.Physic.Physics;
 import bensbasicgameengine.Physic.PhysicsObject;
 import bensbasicgameengine.Physic.PhysicsRectangle;
+import evolutiontest.bensbasicneuralnetwork.Network;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -48,15 +49,20 @@ public class Example {
     }
 
     public Example(){
-        setupGraphics();
+        Network network = new Network(5,2,3);
+        double inputlayervalues [] = {1,1,1,1,1};
+        Network networkcloned = network.cloneNetwork();
+        network.simulateandoutput(inputlayervalues);
+        networkcloned.simulateandoutput(inputlayervalues);
+        /*setupGraphics();
         setupHUD();
         setupPlayer();
         setupDeadZones();
         setupEvents();
         setupWindow();
-        //logic.setShowhitbox(true);
+        logic.setShowhitbox(true);
         logic.forcecamfollow(player.getPhysicsObject());
-        logic.startloop();
+        logic.startloop();*/
     }
 
     private void setupWindow(){

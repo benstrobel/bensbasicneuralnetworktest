@@ -1,4 +1,4 @@
-package example;
+package evolutiontest;
 
 import bensbasicgameengine.GameLogic.Events.DeleteProjectilesEvent;
 import bensbasicgameengine.GameLogic.GameObject;

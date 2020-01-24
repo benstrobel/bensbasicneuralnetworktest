@@ -25,16 +25,6 @@ public class PhysicsRectangle extends PhysicsObject{
         updateShape();
     }
 
-    public Line2D[] getLines()
-    {
-        Line2D [] lines = new Line2D[4];
-        lines[0] = new Line2D.Double(position.getX(), position.getY(), position.getX(), position.getY()+height);
-        lines[1] = new Line2D.Double(position.getX(), position.getY(), position.getX()+width, position.getY());
-        lines[2] = new Line2D.Double(position.getX()+width, position.getY()+height, position.getX()+width, position.getY());
-        lines[3] = new Line2D.Double(position.getX()+width, position.getY()+height, position.getX(), position.getY()+height);
-        return lines;
-    }
-
     @Override
     public String getTransmissionData(char delimiter){
         return super.getTransmissionData(delimiter) + delimiter + "r" + delimiter + width + delimiter + height;
@@ -83,6 +73,7 @@ public class PhysicsRectangle extends PhysicsObject{
 
     @Override
     public boolean detectCollision(PhysicsObject object) {
+        Line2D line = new Line2D.Double(0,0,10,10);
         return detectCollisionGeneral(this,object);
         //if(object instanceof PhysicsCircle){return PhysicsObject.detectCollision((PhysicsCircle)object, this);}
         //if(object instanceof PhysicsRectangle){return PhysicsObject.detectCollision(this, (PhysicsRectangle) object);}

@@ -1,5 +1,5 @@
 // Copyright 2019, Benedikt Strobel, All rights reserved.
-package example;
+package evolutiontest;
 
 import bensbasicgameengine.GameLogic.GameObject;
 import bensbasicgameengine.GameLogic.Events.LogicEvent;
