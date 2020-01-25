@@ -67,11 +67,11 @@ public class Neuron{
         this.incominglinks = incominglinks;
     }
 
-    public String toString(){
+    /*public String toString(){
         String r = "";
         for(IncomingNeuron in : incominglinks){
             r += in.toString();
         }
         return r;
-    }
+    }*/
 }

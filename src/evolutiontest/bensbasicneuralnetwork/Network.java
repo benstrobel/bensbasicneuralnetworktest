@@ -125,6 +125,7 @@ public class Network {
                 result += incomingNeuron.getWeight()*incomingNeuron.getNeuron().getValue();
             }
             n.setValue(result);
+            //n.setValue(result/n.getIncominglinks().size());
         }
     }
 

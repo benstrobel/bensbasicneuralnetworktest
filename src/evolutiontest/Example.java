@@ -15,6 +15,7 @@ import bensbasicgameengine.Input.WindowFocusListener;
 import bensbasicgameengine.Physic.Physics;
 import bensbasicgameengine.Physic.PhysicsObject;
 import bensbasicgameengine.Physic.PhysicsRectangle;
+import evolutiontest.bensbasicneuralnetwork.EvolutionTest;
 import evolutiontest.bensbasicneuralnetwork.Network;
 
 import javax.imageio.ImageIO;
@@ -49,11 +50,9 @@ public class Example {
     }
 
     public Example(){
-        Network network = new Network(5,2,3);
-        double inputlayervalues [] = {1,1,1,1,1};
-        Network networkcloned = network.cloneNetwork();
-        network.simulateandoutput(inputlayervalues);
-        networkcloned.simulateandoutput(inputlayervalues);
+        Network network = new Network(3,3,3);
+        Network cloned = network.cloneNetwork();
+        EvolutionTest evolutionTest = new EvolutionTest();
         /*setupGraphics();
         setupHUD();
         setupPlayer();

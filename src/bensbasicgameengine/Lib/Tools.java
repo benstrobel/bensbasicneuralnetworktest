@@ -81,6 +81,14 @@ public class Tools {
         }
     }
 
+    public static double differance(double a, double b){
+        if(a > b){
+            return Math.abs(a-b);
+        }else{
+            return Math.abs(b-a);
+        }
+    }
+
     public static Shape rotateShape(double angle, Shape shape){
         AffineTransform t = new AffineTransform();
         t.rotate(Math.toRadians(angle),shape.getBounds2D().getX()+shape.getBounds2D().getWidth()/2,shape.getBounds2D().getY() + shape.getBounds2D().getHeight()/2);
