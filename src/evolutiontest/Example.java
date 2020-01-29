@@ -52,7 +52,15 @@ public class Example {
     public Example(){
         Network network = new Network(3,3,3);
         Network cloned = network.cloneNetwork();
-        EvolutionTest evolutionTest = new EvolutionTest();
+        Network mutated = network.weightmution(100,30);
+        EvolutionTest evolutionTest = new EvolutionTest(20,30);
+        /*network.simulateandoutput(new double [] {1,1,1});
+        cloned.simulateandoutput(new double [] {1,1,1});
+        mutated.simulateandoutput(new double [] {1,1,1});
+        System.out.println("Network: " + network.check());
+        System.out.println("Cloned: " + cloned.check());
+        System.out.println("Mutated: " + mutated.check());*/
+        System.out.println();
         /*setupGraphics();
         setupHUD();
         setupPlayer();

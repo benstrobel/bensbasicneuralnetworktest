@@ -40,8 +40,7 @@ public class Network {
         network.setOutputlayer(outputlayer.cloneRawLayer());
         Layer previouslayer = network.getInputlayer();
         for(int i = 0; i < hiddenlayers.size(); i++){
-            Layer l = hiddenlayers.get(i);
-            previouslayer = fixLayer(network, previouslayer, l,i);
+            previouslayer = fixLayer(network, previouslayer, hiddenlayers.get(i),i);
         }
         fixLayer(network, previouslayer, outputlayer,-1);
         return network;
@@ -65,9 +64,7 @@ public class Network {
         }else{
             network.getHiddenlayers().add(nlayer);
         }
-
-        previouslayer = l;
-        return previouslayer;
+        return nlayer;
     }
 
     //TODO Add mutation on layer and network level (creating/destorying neurons/layers)
@@ -76,17 +73,44 @@ public class Network {
         Random random = new Random();
         for(Neuron n : l.getNeurons()){
             for(IncomingNeuron in : n.getIncominglinks()){
-                int r = random.nextInt(100)+1;
+                int r = random.nextInt(100);
                 if(r < probability){
-                    r = random.nextInt(100)+1;
+                    r = random.nextInt(100);
                     if(r < majorprobability){
-                        in.setWeight(in.getWeight()+random.nextDouble()*majormutationmax);
+                        double delta = (random.nextDouble()-0.5)*2*majormutationmax;
+                        in.setWeight(in.getWeight()+delta);
                     }else{
-                        in.setWeight(in.getWeight()+random.nextDouble()*slightmutationmax);
+                        double delta = (random.nextDouble()-0.5)*2*slightmutationmax;
+                        in.setWeight(in.getWeight()+ delta);
                     }
                 }
             }
         }
+    }
+
+    public boolean check(){
+        Layer previouslayer = inputlayer;
+        for(Layer l : hiddenlayers){
+            for(Neuron n : l.getNeurons()){
+                for(int i = 0; i < n.getIncominglinks().size(); i++){
+                    if(previouslayer.getNeurons().get(i) != n.getIncominglinks().get(i).getNeuron()){
+                        System.out.println("Hidden");
+                        return false;
+                    }
+                }
+            }
+            previouslayer = l;
+        }
+        previouslayer = hiddenlayers.get(hiddenlayers.size()-1);
+        for(Neuron n : outputlayer.getNeurons()){
+            for(int i = 0; i < n.getIncominglinks().size(); i++){
+                if(previouslayer.getNeurons().get(i) != n.getIncominglinks().get(i).getNeuron()){
+                    System.out.println("Output");
+                    return false;
+                }
+            }
+        }
+        return true;
     }
 
     public Network weightmution(double probability, double majorprobability){

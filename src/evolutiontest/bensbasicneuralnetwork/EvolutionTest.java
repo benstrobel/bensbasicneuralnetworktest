@@ -2,22 +2,56 @@ package evolutiontest.bensbasicneuralnetwork;
 
 import bensbasicgameengine.Lib.Tools;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class EvolutionTest {
 
     ArrayList<EvaluatedNetwork []> networks = new ArrayList<>();
-    private static final int evosteps = 10, popsize = 5;
+    private static final int evosteps = 200, popsize = 100;
+    private int probability, majorprobability;
 
 
     //TODO find error and fix it, probably in network cloning or in mutation the references get fucked up. Later layers (first two are fine) dont properly point to previous ones
-    public EvolutionTest(){
+    public EvolutionTest(int probability, int majorprobability){
+        this.probability = probability;
+        this.majorprobability = majorprobability;
         EvaluatedNetwork buff [] = {new EvaluatedNetwork(new Network(3,2,3),0)};
         networks.add(buff);
         for(int i = 0; i < evosteps; i++){
             evolutionstep();
         }
-        System.out.println();
+        printEvaluatedNetworkArray(networks.get(networks.size()-1));
+        System.out.println("Printing   Avg \t\t\t\tBst \t\tGeneration Fitness: ");
+        for(int i = 0; i < networks.size(); i++){
+            EvaluatedNetwork [] generation = networks.get(i);
+            DecimalFormat df = new DecimalFormat("#.##");
+            System.out.println("Gen. " + i + " : " + df.format(getAverageGenerationFitness(generation)) + "\t\t\t\t" + df.format(getBestFitnessofGeneration(generation)));
+        }
+    }
+
+    public double getAverageGenerationFitness(EvaluatedNetwork [] generation){
+        double fitnesssum = 0;
+        for(EvaluatedNetwork evn : generation){
+            fitnesssum += evn.getFitness();
+        }
+        return (fitnesssum/generation.length);
+    }
+
+    public double getBestFitnessofGeneration(EvaluatedNetwork [] generation){
+        EvaluatedNetwork best = generation[0];
+        for(EvaluatedNetwork evn : generation){
+            if(evn.getFitness() > best.getFitness()){
+                best = evn;
+            }
+        }
+        return best.getFitness();
+    }
+
+    public void printEvaluatedNetworkArray(EvaluatedNetwork [] result){
+        for(EvaluatedNetwork evn : result){
+            System.out.println(evn);
+        }
     }
 
     private void evolutionstep(){
@@ -25,8 +59,11 @@ public class EvolutionTest {
         Network [] nextgen = new Network[currentgen.length*popsize];
         for(int i = 0; i < currentgen.length; i++){
             for(int x = 0; x < popsize; x++){
-                nextgen[i+x] = currentgen[i].getNetwork().weightmution(0,0);
+                nextgen[i*popsize+x] = currentgen[i].getNetwork().weightmution(probability,majorprobability);
             }
+        }
+        for(int i = 0; i < currentgen.length; i++){
+            nextgen[i] = currentgen[i].getNetwork().cloneNetwork();
         }
         double [] fitness = new double [nextgen.length];
         for(int i = 0; i < nextgen.length; i++){
@@ -38,6 +75,7 @@ public class EvolutionTest {
         }
         networks.add(savebestfive(nextgen,fitness));
     }
+
 
     //TODO Clean up this mess
     private EvaluatedNetwork [] savebestfive(Network [] nextgen, double [] fitness){
@@ -100,6 +138,10 @@ public class EvolutionTest {
 
         public Network getNetwork() {
             return network;
+        }
+
+        public String toString(){
+            return "Fitness: " + fitness;
         }
     }
 }
