@@ -6,10 +6,16 @@ import bensbasicgameengine.Physic.PhysicsObject;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Area;
 import java.awt.geom.Path2D;
 import java.awt.geom.Point2D;
 
 public class Tools {
+
+    public static Point2D getVectorFromAngle(double orientation){
+        double rad = Math.toRadians(orientation);
+        return new Point2D.Double(Math.cos(rad),Math.sin(rad));
+    }
 
     public static void threadsleep(long ms){
         if(ms < 1){return;}
@@ -34,6 +40,10 @@ public class Tools {
         Point2D source = (Point2D) from.getPosition().clone();
         source.setLocation(source.getX()+from.getShape().getBounds2D().getWidth()/2,source.getY()+from.getShape().getBounds2D().getHeight()/2);
         return source;
+    }
+
+    public static Point2D getRealMiddle(PhysicsObject from){
+        return from.getCenterPosition();
     }
 
     public static double getDegree(Point2D m){

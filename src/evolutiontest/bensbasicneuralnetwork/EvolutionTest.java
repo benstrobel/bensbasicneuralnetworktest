@@ -1,6 +1,7 @@
 package evolutiontest.bensbasicneuralnetwork;
 
 import bensbasicgameengine.Lib.Tools;
+import evolutiontest.Example;
 
 import java.text.DecimalFormat;
 import java.util.ArrayList;
@@ -10,7 +11,7 @@ public class EvolutionTest {
     ArrayList<EvaluatedNetwork []> networks = new ArrayList<>();
     private static final int evosteps = 200, popsize = 100;
     private int probability, majorprobability;
-
+    private Example example;
 
     //TODO find error and fix it, probably in network cloning or in mutation the references get fucked up. Later layers (first two are fine) dont properly point to previous ones
     public EvolutionTest(int probability, int majorprobability){
@@ -28,6 +29,7 @@ public class EvolutionTest {
             DecimalFormat df = new DecimalFormat("#.##");
             System.out.println("Gen. " + i + " : " + df.format(getAverageGenerationFitness(generation)) + "\t\t\t\t" + df.format(getBestFitnessofGeneration(generation)));
         }
+        example = new Example();
     }
 
     public double getAverageGenerationFitness(EvaluatedNetwork [] generation){
@@ -68,16 +70,14 @@ public class EvolutionTest {
         double [] fitness = new double [nextgen.length];
         for(int i = 0; i < nextgen.length; i++){
             double fit = 0.0;
-            fit += evaluate(nextgen[i].simulate(new double[] {1,1,1} ),new double [] {0,0,1});
-            fit += evaluate(nextgen[i].simulate(new double[] {0,1,0} ),new double [] {0,1,0});
-            fit += evaluate(nextgen[i].simulate(new double[] {1,0,0} ),new double [] {1,0,0});
+
             fitness[i] = fit;
         }
         networks.add(savebestfive(nextgen,fitness));
     }
 
 
-    //TODO Clean up this mess
+    //TODO Clean up this mess (unefficient, unelegant)
     private EvaluatedNetwork [] savebestfive(Network [] nextgen, double [] fitness){
         EvaluatedNetwork buffer [] = new EvaluatedNetwork [5];
         int index0 = 0, index1 = 0, index2 = 0, index3 = 0, index4 = 0;

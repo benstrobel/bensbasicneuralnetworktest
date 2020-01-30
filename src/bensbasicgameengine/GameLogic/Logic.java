@@ -65,11 +65,18 @@ public class Logic {
         }
     }
 
+    public void reset(){
+        run = false;
+        logicEvents.clear();
+        gameObjects.clear();
+        triggerObjects.clear();
+    }
+
     public int getNextID(){
         return currentid++;
     }
 
-    private void tick(){
+    public void tick(){
         if(graphic != null){graphic.repaint();}
         if(soundManager != null){soundManager.tick();}
         if(!pause){
@@ -87,6 +94,7 @@ public class Logic {
     }
 
     public void startloop(){
+        run = true;
         loop();
     }
 

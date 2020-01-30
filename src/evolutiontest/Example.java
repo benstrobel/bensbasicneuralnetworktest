@@ -16,7 +16,6 @@ import bensbasicgameengine.Physic.Physics;
 import bensbasicgameengine.Physic.PhysicsObject;
 import bensbasicgameengine.Physic.PhysicsRectangle;
 import evolutiontest.bensbasicneuralnetwork.EvolutionTest;
-import evolutiontest.bensbasicneuralnetwork.Network;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
@@ -38,42 +37,53 @@ public class Example {
     private WindowFocusListener windowFocusListener = new WindowFocusListener();
     private Logic logic = new Logic(graphic,physics,null,keyListener,mouse_listener,mouseMove_listener);
 
-    private String texturepaths [] = {"dude.png"};
+    private String texturepaths [] = {};
     private BufferedImage textures [];
     private GameObject player;
 
     HudObject testmenu;
 
+    LongWrapper abort = new LongWrapper();
+
 
     public static void main(String[] args) {
-        new Example();
+        new EvolutionTest(20,30);
     }
 
     public Example(){
-        Network network = new Network(3,3,3);
-        Network cloned = network.cloneNetwork();
-        Network mutated = network.weightmution(100,30);
-        EvolutionTest evolutionTest = new EvolutionTest(20,30);
-        /*network.simulateandoutput(new double [] {1,1,1});
-        cloned.simulateandoutput(new double [] {1,1,1});
-        mutated.simulateandoutput(new double [] {1,1,1});
-        System.out.println("Network: " + network.check());
-        System.out.println("Cloned: " + cloned.check());
-        System.out.println("Mutated: " + mutated.check());*/
-        System.out.println();
-        /*setupGraphics();
+        setupGraphics();
         setupHUD();
         setupPlayer();
-        setupDeadZones();
         setupEvents();
         setupWindow();
         logic.setShowhitbox(true);
         logic.forcecamfollow(player.getPhysicsObject());
-        logic.startloop();*/
+    }
+
+    public long simulate(BoolWrapper [] in, BoolWrapper [] out){
+        abort.setState(0);
+        LogicEvent hitwall = new WallCollideEvent(player,logic,abort);
+        logic.registerLogicEvent(hitwall);
+        LogicEvent inputEvent = new InputEvent(out[0],out[1],player);
+        logic.registerLogicEvent(inputEvent);
+        setupSensors(in);
+        while(abort.getState() == 0){
+            logic.tick();
+        }
+        reset(in);
+        return abort.getState();
+    }
+
+    public void reset(BoolWrapper [] in){
+        logic.reset();
+        setupPlayer();
+        setupSensors(in);
+        setupEvents();
+        logic.forcecamfollow(player.getPhysicsObject());
     }
 
     private void setupWindow(){
-        JFrame frame = new JFrame("Bens Basic Game Engine - Example");
+        JFrame frame = new JFrame("Bens Basic Evolution Testchamber");
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.setSize(800,800);
         frame.add(graphic.getPanel());
@@ -89,8 +99,8 @@ public class Example {
     private void setupEvents(){
         LogicEvent keyEvent = new KeyEvent(keyListener,player,graphic,testmenu);
         logic.registerLogicEvent(keyEvent);
-        LogicEvent mouseEvent = new MouseEvent(mouse_listener,logic,player,logic.getCamlocation());
-        logic.registerLogicEvent(mouseEvent);
+        LogicEvent velocityEvent = new VelocityEvent(player);
+        logic.registerLogicEvent(velocityEvent);
         LogicEvent windowFocusEvent = new WindowFocusEvent(windowFocusListener,keyListener);
         logic.registerLogicEvent(windowFocusEvent);
         LogicEvent hudclick0 = new HudClickEvent(testmenu,mouse_listener);
@@ -99,19 +109,26 @@ public class Example {
     }
 
     private void setupPlayer(){
-        PhysicsObject playerrectangle = new PhysicsRectangle(new Point2D.Double(100,100), 1, 80, 60);
-        player = new GameObject(logic.getNextID(),playerrectangle,textures[0]);
+        PhysicsObject playerrectangle = new PhysicsRectangle(new Point2D.Double(100,800), 1, 60, 80);
+        player = new GameObject(logic.getNextID(),playerrectangle,Color.BLUE,true);
         playerrectangle.setParent(player);
         player.setGraphiclayerid(0);
+        player.rotate(270);
+        player.setFlag("player");
+        PhysicsObject goalrectangle = new PhysicsRectangle(new Point2D.Double(930,30), 1, 300, 100);
+        GameObject goal = new GameObject(logic.getNextID(),goalrectangle,Color.YELLOW,true);
+        goal.registerLogicEvent(new HitGoal(goal,abort));
+        goalrectangle.setParent(goal);
+        goal.setGraphiclayerid(0);
+        goal.setFlag("goal");
+        logic.addGameObject(goal);
         logic.addGameObject(player);
-        PhysicsObject targetrectangle = new PhysicsRectangle(new Point2D.Double(300,300), 1, 50, 50);
-        GameObject target = new GameObject(logic.getNextID(),targetrectangle,null);
-        targetrectangle.setParent(target);
-        logic.addGameObject(target);
         logic.addWall(0,0,1000,30);
         logic.addWall(0,970, 30, 1000);
         logic.addWall(0,0,30,1000);
-        logic.addWall(970,0,1000,30);
+        logic.addWall(300,300,700,30);
+        logic.addWall(600,0,700,30);
+        logic.addWall(900,300,700,30);
     }
 
     private void setupHUD(){
@@ -124,11 +141,31 @@ public class Example {
         logic.addHudObject(testmenu);
     }
 
-    private void setupDeadZones(){
-        logic.addDeadZone(-100,-100,50,1200);
-        logic.addDeadZone(-100,-100,1200,50);
-        logic.addDeadZone(-100,1050,50,1200);
-        logic.addDeadZone(1050,-100, 1200, 50);
+    private void setupSensors(BoolWrapper [] in){
+        GameObject [] fl = new GameObject[5], f = new GameObject[5], fr = new GameObject[5];
+        for(int i = 0; i < 5; i++){
+            PhysicsObject obj = new PhysicsRectangle(new Point2D.Double(0,0),1, 40, 20);
+            fl [i] = new GameObject(logic.getNextID(),obj,null);
+            obj.setParent(fl[i]);
+            fl[i].registerLogicEvent(new SensorEvent(fl[i],player,in[i]));
+            logic.addGameObject(fl[i]);
+        }
+        for(int i = 0; i < 5; i++){
+            PhysicsObject obj = new PhysicsRectangle(new Point2D.Double(0,0),1, 40, 20);
+            f [i] = new GameObject(logic.getNextID(),obj,null);
+            obj.setParent(f[i]);
+            fl[i].registerLogicEvent(new SensorEvent(fl[i],player,in[5+i]));
+            logic.addGameObject(f[i]);
+        }
+        for(int i = 0; i < 5; i++){
+            PhysicsObject obj = new PhysicsRectangle(new Point2D.Double(0,0),1, 40, 20);
+            fr [i] = new GameObject(logic.getNextID(),obj,null);
+            obj.setParent(fr[i]);
+            fl[i].registerLogicEvent(new SensorEvent(fl[i],player,in[10+i]));
+            logic.addGameObject(fr[i]);
+        }
+        LogicEvent movesensor = new SensorMoveEvent(player,fl,f,fr);
+        logic.registerLogicEvent(movesensor);
     }
 
     private void setupGraphics(){
