@@ -7,6 +7,7 @@ import bensbasicgameengine.GameLogic.HudObject;
 import bensbasicgameengine.GameLogic.Logic;
 import bensbasicgameengine.GameLogic.Events.LogicEvent;
 import bensbasicgameengine.Graphic.Graphic;
+import bensbasicgameengine.Graphic.GraphicImage;
 import bensbasicgameengine.Graphic.GraphicShape;
 import bensbasicgameengine.Input.KeyListener;
 import bensbasicgameengine.Input.MouseMove_Listener;
@@ -24,6 +25,7 @@ import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.geom.Ellipse2D;
+import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
@@ -41,7 +43,8 @@ public class EvolutionTestChamber {
     private WindowFocusListener windowFocusListener = new WindowFocusListener();
     private Logic logic = new Logic(graphic,physics,null,keyListener,mouse_listener,mouseMove_listener);
 
-    private String texturepaths [] = {};
+    private String texturepaths [] = {"0.png","1.png","2.png","3.png","4.png","5.png","6.png","7.png","8.png","9.png","A.png","B.png","C.png","D.png","E.png","F.png","G.png","H.png","I.png","J.png","K.png","L.png","M.png","N.png",
+            "O.png","P.png","Q.png","R.png","S.png","T.png","U.png","V.png","W.png","X.png","Y.png","Z.png","space.png","slash.png","point.png","dpoint.png", "minus.png"};
     private BufferedImage textures [];
     private GameObject player;
 
@@ -72,7 +75,7 @@ public class EvolutionTestChamber {
         logic.addGameObject(g0);
     }
 
-    public long simulate(BoolWrapper [] in, BoolWrapper [] out, Network network){
+    public long simulate(BoolWrapper [] in, BoolWrapper [] out, Network network, int curgen, int curid){
         abort.setLocation(-1,-1);
         BoolWrapper [] steps = new BoolWrapper[10];
         BoolWrapper goalbool = new BoolWrapper();
@@ -102,7 +105,7 @@ public class EvolutionTestChamber {
         LogicEvent inputEvent = new InputEvent(out[0],out[1],player);
         logic.registerLogicEvent(inputEvent);
         PhysicsObject goalrectangle = new PhysicsRectangle(new Point2D.Double(930,30), 1, 300, 100);
-        GameObject goal = new GameObject(logic.getNextID(),goalrectangle,Color.YELLOW,true);
+        GameObject goal = new GameObject(logic.getNextID(),goalrectangle,Color.GREEN,true);
         goal.registerLogicEvent(new HitGoalEvent(goal,goalbool));
         goalrectangle.setParent(goal);
         goal.setGraphiclayerid(0);
@@ -189,13 +192,13 @@ public class EvolutionTestChamber {
                 logic.tick();
                 Tools.threadsleep(10);
             } else {
+                logic.clearhudObjects();
+                paintString("Generation " + curgen + " ID " + curid, 50,220, 2);
+                paintNetwork(network);
                 if(keyListener.getKeysAndReset()[KeyListener.SPACE]){
-                    logic.clearhudObjects();
-                    paintNetwork(network);
                     logic.tick();
                     Tools.threadsleep(10);
                 }else{
-                    logic.clearhudObjects();
                     logic.tick();
                     //logic.tickphyonly();
                 }
@@ -291,6 +294,21 @@ public class EvolutionTestChamber {
                 };
                 hudobj.setEnabled(true);
                 logic.addHudObject(hudobj);
+                for(int j = 0; j < network.getHiddenlayers().get(x).getNeurons().get(i).getIncominglinks().size(); j++){
+                    Color color;
+                    if(network.getHiddenlayers().get(x).getNeurons().get(i).getIncominglinks().get(j).getWeight() > 0){
+                        color = Color.RED;
+                    }else{
+                        color = Color.GREEN;
+                    }
+                    HudObject line = new HudObject(50+((x+1)*60),50+(i*50)+12, new GraphicShape(new Line2D.Double(50+((x+1)*60),50+(i*50)+12,50+((x+1-1)*60)+25, 50+(j*50)+12), color, true, 0,true)) {
+                        @Override
+                        public void activationMethod() {
+                        }
+                    };
+                    line.setEnabled(true);
+                    logic.addHudObject(line);
+                }
             }
         }
         for(int i = 0; i < network.getOutputlayer().getNeurons().size(); i++){
@@ -303,6 +321,80 @@ public class EvolutionTestChamber {
             };
             hudobj.setEnabled(true);
             logic.addHudObject(hudobj);
+            for(int j = 0; j < network.getOutputlayer().getNeurons().get(i).getIncominglinks().size(); j++){
+                Color color;
+                if(network.getOutputlayer().getNeurons().get(i).getIncominglinks().get(j).getWeight() > 0){
+                    color = Color.RED;
+                }else{
+                    color = Color.GREEN;
+                }
+                HudObject line = new HudObject(50+((network.getHiddenlayers().size())*60),50+(i*50)+12, new GraphicShape(new Line2D.Double(50+((network.getHiddenlayers().size()+1)*60),50+(i*50)+12,50+((network.getHiddenlayers().size())*60)+25, 50+(j*50)+12), color, true, 0,true)) {
+                    @Override
+                    public void activationMethod() {
+                    }
+                };
+                line.setEnabled(true);
+                logic.addHudObject(line);
+            }
+        }
+    }
+
+    private void paintString(String s, int x, int y, double sizefactor){
+        for(int i = 0; i < s.length(); i++){
+            HudObject obj = new HudObject((int)(x+(8*i*sizefactor)), y, 8, 8, new GraphicImage(GraphicImage.resize(textures[getCharTextID(s.toUpperCase().charAt(i))],sizefactor), new Point2D.Double((int)(x+(8*i*sizefactor)),y))) {
+                @Override
+                public void activationMethod() {
+                }
+            };
+            obj.setEnabled(true);
+            logic.addHudObject(obj);
+        }
+    }
+
+    private int getCharTextID(char c){
+        switch (c){
+            case '0':{return 0;}
+            case '1':{return 1;}
+            case '2':{return 2;}
+            case '3':{return 3;}
+            case '4':{return 4;}
+            case '5':{return 5;}
+            case '6':{return 6;}
+            case '7':{return 7;}
+            case '8':{return 8;}
+            case '9':{return 9;}
+            case 'A':{return 10;}
+            case 'B':{return 11;}
+            case 'C':{return 12;}
+            case 'D':{return 13;}
+            case 'E':{return 14;}
+            case 'F':{return 15;}
+            case 'G':{return 16;}
+            case 'H':{return 17;}
+            case 'I':{return 18;}
+            case 'J':{return 19;}
+            case 'K':{return 20;}
+            case 'L':{return 21;}
+            case 'M':{return 22;}
+            case 'N':{return 23;}
+            case 'O':{return 24;}
+            case 'P':{return 25;}
+            case 'Q':{return 26;}
+            case 'R':{return 27;}
+            case 'S':{return 28;}
+            case 'T':{return 29;}
+            case 'U':{return 30;}
+            case 'V':{return 31;}
+            case 'W':{return 32;}
+            case 'X':{return 33;}
+            case 'Y':{return 34;}
+            case 'Z':{return 35;}
+            case ' ':{return 36;}
+            case '/':{return 37;}
+            case '.':{return 38;}
+            case ':':{return 39;}
+            case '-':{return 40;}
+            default: {return 36;}
         }
     }
 
@@ -347,7 +439,7 @@ public class EvolutionTestChamber {
         textures = new BufferedImage[texturepaths.length];
         URL toload;
         for(int i = 0; i < texturepaths.length; i++){
-            toload = this.getClass().getResource(texturepaths[i]);
+            toload = this.getClass().getResource("/"+texturepaths[i]);
             if(toload != null){
                 try {
                     textures [i] = ImageIO.read(toload);

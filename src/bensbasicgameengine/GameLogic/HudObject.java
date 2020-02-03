@@ -17,6 +17,12 @@ public abstract class HudObject {
         this.graphicObject = graphicObject;
     }
 
+    public HudObject(int x, int y, GraphicObject graphicObject){
+        this.x = x;
+        this.y = y;
+        this.graphicObject = graphicObject;
+    }
+
     public abstract void activationMethod();
 
     public boolean isEnabled() {

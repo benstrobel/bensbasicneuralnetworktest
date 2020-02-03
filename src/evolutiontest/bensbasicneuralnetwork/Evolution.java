@@ -16,6 +16,8 @@ public class Evolution {
     private EvolutionTestChamber evolutionTestChamber;
     private int cg = 0;
 
+    private ArrayList<Double> avggenfitness = new ArrayList<>();
+
     //TODO find error and fix it, probably in network cloning or in mutation the references get fucked up. Later layers (first two are fine) dont properly point to previous ones
     public Evolution(int probability, int majorprobability){
         this.probability = probability;
@@ -25,7 +27,7 @@ public class Evolution {
         evolutionTestChamber = new EvolutionTestChamber();
         //simDesignedNetwork();
         for(int i = 0; i < evosteps; i++){
-            evolutionstep();
+            evolutionstep(i);
             cg++;
         }
         printEvaluatedNetworkArray(networks.get(networks.size()-1));
@@ -111,10 +113,10 @@ public class Evolution {
         for(int i = 0; i < in.length; i++){in[i] = new BoolWrapper();}
         for(int i = 0; i < out.length; i++){out[i] = new BoolWrapper();}
 
-        System.out.println(evolutionTestChamber.simulate(in,out,network));
+        System.out.println(evolutionTestChamber.simulate(in,out,network,0,0));
     }
 
-    private void evolutionstep(){
+    private void evolutionstep(int curgen){
         EvaluatedNetwork [] currentgen = networks.get(networks.size()-1);
         Network [] nextgen = new Network[currentgen.length*popsize];
         for(int i = 0; i < currentgen.length; i++){
@@ -134,12 +136,13 @@ public class Evolution {
         for(int i = 0; i < out.length; i++){out[i] = new BoolWrapper();}
 
         for(int i = 0; i < nextgen.length; i++){
-            fitness[i] = evolutionTestChamber.simulate(in,out,nextgen[i]);
+            fitness[i] = evolutionTestChamber.simulate(in,out,nextgen[i],curgen,i);
             //System.out.println("Gen " + cg + " - " + "Id: " + i + " Fitness: " + fitness[i]);
             for(BoolWrapper bw : in){bw.setState(false);}
             for(BoolWrapper bw : out){bw.setState(false);}
         }
-        System.out.println("Gen " + cg + " - " + " Avg. Fitness: " + getAverageGenerationFitness(fitness) + "\t\t" + "Bst: " + getBestFitnessofGeneration(fitness));
+        avggenfitness.add(getAverageGenerationFitness(fitness));
+        System.out.println("Gen " + cg + " - " + " Avg. Fitness: " + avggenfitness.get(avggenfitness.size()-1) + "\t\t" + "Bst: " + getBestFitnessofGeneration(fitness));
         networks.add(savebestandrandom(nextgen,fitness));
     }
 

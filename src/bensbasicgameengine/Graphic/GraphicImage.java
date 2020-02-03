@@ -126,4 +126,10 @@ public class GraphicImage extends GraphicObject {
         AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
         return op.filter(image,null);
     }
+
+    public static BufferedImage resize(BufferedImage image, double factor){
+        AffineTransform tx = AffineTransform.getScaleInstance(factor,factor);
+        AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_BILINEAR);
+        return op.filter(image,null);
+    }
 }
