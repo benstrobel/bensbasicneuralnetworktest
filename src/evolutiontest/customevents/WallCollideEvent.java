@@ -1,17 +1,20 @@
-package evolutiontest;
+package evolutiontest.customevents;
 
 import bensbasicgameengine.GameLogic.Events.LogicEvent;
 import bensbasicgameengine.GameLogic.GameObject;
 import bensbasicgameengine.GameLogic.Logic;
 import bensbasicgameengine.Physic.PhysicsObject;
+import evolutiontest.LongWrapper;
+
+import java.awt.geom.Point2D;
 
 public class WallCollideEvent extends LogicEvent {
 
     private GameObject player;
     private Logic logic;
-    private LongWrapper abort;
+    private Point2D abort;
 
-    public WallCollideEvent(GameObject player, Logic logic, LongWrapper abort){
+    public WallCollideEvent(GameObject player, Logic logic, Point2D abort){
         this.player = player;
         this.logic = logic;
         this.abort = abort;
@@ -24,7 +27,7 @@ public class WallCollideEvent extends LogicEvent {
 
     @Override
     public void eventmethod() {
-        abort.setState(logic.getTickcounter());
+        abort.setLocation(player.getPhysicsObject().getPosition());
     }
 
     @Override

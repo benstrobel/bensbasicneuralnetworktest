@@ -12,5 +12,8 @@ public class LongWrapper {
         return state;
     }
 
+    public String toString(){
+        return ""+getState();
+    }
 
 }

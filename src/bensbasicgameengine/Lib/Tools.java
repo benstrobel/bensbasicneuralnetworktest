@@ -12,6 +12,13 @@ import java.awt.geom.Point2D;
 
 public class Tools {
 
+    public static int getDistance(Point2D a, Point2D b){
+        int distance = 0;
+        distance += differance(a.getX(),b.getX());
+        distance += differance(a.getY(),b.getY());
+        return distance;
+    }
+
     public static Point2D getVectorFromAngle(double orientation){
         double rad = Math.toRadians(orientation);
         return new Point2D.Double(Math.cos(rad),Math.sin(rad));

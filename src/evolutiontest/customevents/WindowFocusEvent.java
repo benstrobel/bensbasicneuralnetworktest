@@ -1,4 +1,4 @@
-package evolutiontest;
+package evolutiontest.customevents;
 
 import bensbasicgameengine.GameLogic.Events.LogicEvent;
 import bensbasicgameengine.Input.KeyListener;

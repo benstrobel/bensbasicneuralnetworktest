@@ -1,4 +1,4 @@
-package evolutiontest;
+package evolutiontest.customevents;
 
 import bensbasicgameengine.GameLogic.Events.LogicEvent;
 import bensbasicgameengine.GameLogic.GameObject;
@@ -22,8 +22,8 @@ public class VelocityEvent extends LogicEvent {
     @Override
     public void eventmethod() {
         Point2D velcevtor = Tools.mulVector(Tools.normVector(Tools.getVectorFromAngle(player.getOrientation())), 5);
-        //player.getPhysicsObject().setVelocityX(velcevtor.getX());
-        //player.getPhysicsObject().setVelocityY(velcevtor.getY());
+        player.getPhysicsObject().setVelocityX(velcevtor.getX());
+        player.getPhysicsObject().setVelocityY(velcevtor.getY());
     }
 
     @Override

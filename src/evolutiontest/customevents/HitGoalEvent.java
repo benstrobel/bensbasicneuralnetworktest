@@ -1,15 +1,17 @@
-package evolutiontest;
+package evolutiontest.customevents;
 
 import bensbasicgameengine.GameLogic.Events.LogicEvent;
 import bensbasicgameengine.GameLogic.GameObject;
 import bensbasicgameengine.Physic.PhysicsObject;
+import evolutiontest.BoolWrapper;
+import evolutiontest.LongWrapper;
 
-public class HitGoal extends LogicEvent {
+public class HitGoalEvent extends LogicEvent {
 
     private GameObject goal;
-    private LongWrapper abort;
+    private BoolWrapper abort;
 
-    public HitGoal(GameObject goal, LongWrapper abort){
+    public HitGoalEvent(GameObject goal, BoolWrapper abort){
         this.goal = goal;
         this.abort = abort;
     }
@@ -21,7 +23,7 @@ public class HitGoal extends LogicEvent {
 
     @Override
     public void eventmethod() {
-        abort.setState(999999999);
+        abort.setState(true);
     }
 
     @Override

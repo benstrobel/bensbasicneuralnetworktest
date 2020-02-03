@@ -1,8 +1,9 @@
-package evolutiontest;
+package evolutiontest.customevents;
 
 import bensbasicgameengine.GameLogic.Events.LogicEvent;
 import bensbasicgameengine.GameLogic.GameObject;
 import bensbasicgameengine.Physic.PhysicsObject;
+import evolutiontest.BoolWrapper;
 
 public class SensorEvent extends LogicEvent {
 
@@ -22,12 +23,13 @@ public class SensorEvent extends LogicEvent {
 
     @Override
     public void eventmethod() {
+        boolean buffer = false;
         for(PhysicsObject obj : sensorobject.getPhysicsObject().getCollides()){
             if(obj.getFlag().equals("wall")){
-                sensor.setState(true);
+                buffer = true;
             }
         }
-        sensor.setState(false);
+        sensor.setState(buffer);
     }
 
     @Override

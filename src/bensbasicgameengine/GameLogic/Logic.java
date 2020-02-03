@@ -70,6 +70,7 @@ public class Logic {
         logicEvents.clear();
         gameObjects.clear();
         triggerObjects.clear();
+        physics.getObjectList().clear();
     }
 
     public int getNextID(){
@@ -83,6 +84,12 @@ public class Logic {
             logictick();
         }
         graphictick();
+    }
+
+    public void tickphyonly(){
+        if(!pause){
+            logictick();
+        }
     }
 
     public void setPause(boolean pause){
@@ -143,6 +150,10 @@ public class Logic {
                 }
             }
         }
+    }
+
+    public void clearhudObjects(){
+        hudObjects.clear();
     }
 
     public void addhudObjects(){

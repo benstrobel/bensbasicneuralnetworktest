@@ -9,7 +9,8 @@ public class Network {
     private Layer inputlayer;
     private ArrayList<Layer> hiddenlayers = new ArrayList<>();
     private Layer outputlayer;
-    private static double slightmutationmax = 0.2, majormutationmax = 0.6;
+    private static double slightmutationmax = 0.2, majormutationmax = 0.6, extrememutationmax = 2;
+    public static int neg = 0, pos = 0;
 
     public Network(int inputlayerneuroncount, int hiddenlayercount, int outputlayerneuroncount){
         inputlayer = new Layer(inputlayerneuroncount);
@@ -79,9 +80,18 @@ public class Network {
                     if(r < majorprobability){
                         double delta = (random.nextDouble()-0.5)*2*majormutationmax;
                         in.setWeight(in.getWeight()+delta);
+                        if(delta < 0 ){neg++;}else{pos++;}
                     }else{
-                        double delta = (random.nextDouble()-0.5)*2*slightmutationmax;
-                        in.setWeight(in.getWeight()+ delta);
+                        r = random.nextInt(100);
+                        if(r < 10){
+                            double delta = (random.nextDouble()-0.5)*2*extrememutationmax;
+                            in.setWeight(in.getWeight()+ delta);
+                            if(delta < 0 ){neg++;}else{pos++;}
+                        }else{
+                            double delta = (random.nextDouble()-0.5)*2*slightmutationmax;
+                            in.setWeight(in.getWeight()+ delta);
+                            if(delta < 0 ){neg++;}else{pos++;}
+                        }
                     }
                 }
             }
@@ -148,8 +158,8 @@ public class Network {
             for(IncomingNeuron incomingNeuron : n.getIncominglinks()){
                 result += incomingNeuron.getWeight()*incomingNeuron.getNeuron().getValue();
             }
-            n.setValue(result);
-            //n.setValue(result/n.getIncominglinks().size());
+            //n.setValue(result);
+            n.setValue(result/n.getIncominglinks().size());
         }
     }
 

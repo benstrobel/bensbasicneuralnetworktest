@@ -10,4 +10,8 @@ public class BoolWrapper {
     public boolean getState() {
         return state;
     }
+
+    public String toString(){
+        return ""+getState();
+    }
 }
