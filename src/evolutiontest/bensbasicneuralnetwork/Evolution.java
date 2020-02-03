@@ -23,8 +23,8 @@ public class Evolution {
         EvaluatedNetwork buff [] = {new EvaluatedNetwork(new Network(3,2,1),0)};
         networks.add(buff);
         evolutionTestChamber = new EvolutionTestChamber();
-        simDesignedNetwork();
-        /*for(int i = 0; i < evosteps; i++){
+        //simDesignedNetwork();
+        for(int i = 0; i < evosteps; i++){
             evolutionstep();
             cg++;
         }
@@ -34,7 +34,7 @@ public class Evolution {
             EvaluatedNetwork [] generation = networks.get(i);
             DecimalFormat df = new DecimalFormat("#.##");
             System.out.println("Gen. " + i + " : " + df.format(getAverageGenerationFitness(generation)) + "\t\t\t\t" + df.format(getBestFitnessofGeneration(generation)));
-        }*/
+        }
     }
 
     private Network getDesignedNetwork(){

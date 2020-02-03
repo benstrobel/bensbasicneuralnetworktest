@@ -109,9 +109,9 @@ public class EvolutionTestChamber {
         goal.setFlag("goal");
         logic.addGameObject(goal);
         setupSensors(in);
-        boolean realtime = true;
+        boolean realtime = false;
         //if(random.nextInt(100) < 1){realtime = true;}else{realtime = false;}
-        while(abort.getX() == -1 && abort.getY() == -1) {
+        while(abort.getX() == -1 && abort.getY() == -1 && !goalbool.getState()) {
             if (logic.getTickcounter() % 3 == 0) {
                 double[] values = new double[3];
                 values[0] = 100;
@@ -163,7 +163,7 @@ public class EvolutionTestChamber {
                     values[2] = 5;
                 }
                 double[] output = network.simulate(values);
-                System.out.println("In: " + values[0] + " " + values[1] + " " + values[2] + " Out: " + output[0]);
+                //System.out.println("In: " + values[0] + " " + values[1] + " " + values[2] + " Out: " + output[0]);
                 if (output[0] > 0) {
                     out[0].setState(true);
                     out[1].setState(false);
