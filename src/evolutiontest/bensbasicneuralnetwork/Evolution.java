@@ -11,7 +11,7 @@ import java.util.Random;
 public class Evolution {
 
     ArrayList<EvaluatedNetwork []> networks = new ArrayList<>();
-    private static final int evosteps = 200, popsize = 25;
+    private static final int evosteps = 200, popsize = 5;
     private int probability, majorprobability;
     private EvolutionTestChamber evolutionTestChamber;
     private int cg = 0;
@@ -42,11 +42,11 @@ public class Evolution {
     private Network getDesignedNetwork(){
         Network network = new Network(3,1,1);
         // Hiddenlayer
-        network.getHiddenlayers().get(0).getNeurons().get(0).getIncominglinks().get(0).setWeight(-1);    //links
+        network.getHiddenlayers().get(0).getNeurons().get(0).getIncominglinks().get(0).setWeight(-1);    //left
         network.getHiddenlayers().get(0).getNeurons().get(0).getIncominglinks().get(1).setWeight(0);
         network.getHiddenlayers().get(0).getNeurons().get(0).getIncominglinks().get(2).setWeight(1);
 
-        network.getHiddenlayers().get(0).getNeurons().get(1).getIncominglinks().get(0).setWeight(1);    //rechts
+        network.getHiddenlayers().get(0).getNeurons().get(1).getIncominglinks().get(0).setWeight(1);    //right
         network.getHiddenlayers().get(0).getNeurons().get(1).getIncominglinks().get(1).setWeight(0);
         network.getHiddenlayers().get(0).getNeurons().get(1).getIncominglinks().get(2).setWeight(-1);
 

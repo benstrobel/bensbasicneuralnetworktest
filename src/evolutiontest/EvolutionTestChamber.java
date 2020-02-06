@@ -195,10 +195,15 @@ public class EvolutionTestChamber {
                 logic.clearhudObjects();
                 paintString("Generation " + curgen + " ID " + curid, 50,220, 2);
                 paintNetwork(network);
-                if(keyListener.getKeysAndReset()[KeyListener.SPACE]){
-                    logic.tick();
-                    Tools.threadsleep(10);
+                boolean [] keys = keyListener.getKeysAndReset();
+                if(keys [KeyListener.SPACE]){
+                    //logic.tick();
+                    //Tools.threadsleep(10);
                 }else{
+                    if(keys [KeyListener.ALT]){
+                        logic.tick();
+                        Tools.threadsleep(10);
+                    }
                     logic.tick();
                     //logic.tickphyonly();
                 }
